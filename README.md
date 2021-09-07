@@ -5,9 +5,9 @@ If you would like to see an official Spotify AppImage, vote on [community.spotif
 
 I'm not allowed to distribute Spotify AppImage as an official release, so take this release as an experimental version.
 
-If you're looking for furter releases, use [AppMan](https://github.com/ivan-hc/AppMan), a command line utility that downloads and creates AppImages taking packages from known sources: 
+If you're looking for furter releases, use [AppMan](https://github.com/ivan-hc/AppMan), a command line utility that downloads and creates AppImages taking packages from known sources.
 
-# How to use [AppMan](https://github.com/ivan-hc/AppMan):
+# How to use [AppMan](https://github.com/ivan-hc/AppMan)
 
 INSTALL and/or UPDATE using this command:
 

@@ -16,3 +16,27 @@ INSTALL and/or UPDATE using this command:
 In this way will be downloaded, unpacked and repacked a package from Arch User Repository converting it to an AppImage. Use this command each time a new official release for GNU/Linux is ready.
 
 Learn more about AppMan on [github.com/ivan-hc/AppMan](https://github.com/ivan-hc/AppMan).
+
+# How to install Spotify with automatic updates on any GNU/Linux disto (not the AppImage)
+
+Alternativelly to AppMan, exists a new App Manager named "[AM](https://github.com/ivan-hc/AM-application-manager)", that manages a lot of scripts to install/remove standalone programs and AppImages the way that they can update themself when you run the program.
+
+The script to install Spotify will install the program in /opt/spotify, a launcher in /usr/share/applications and a script in /usr/local/bin that will check if there is a new version of the program from the source each time you launch it.
+
+Use the following commands:
+
+`wget https://raw.githubusercontent.com/ivan-hc/AM-application-manager/main/programs/x86_64/spotify`
+
+`chmod a+x ./spotify`
+
+`sudo ./spotify`
+
+Now just use the app without having any care of new updates in the future, they are managed automatically when you launch the program.
+
+To remove the AM's version of Spotify (and all the files listed above), run the following command:
+
+`sudo /opt/spotify/remove`
+
+
+------------------------------------
+# This and more scripts will be available on my new repository, at [ivan-hc/AM-application-manager](https://github.com/ivan-hc/AM-application-manager).

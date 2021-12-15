@@ -21,7 +21,7 @@ Learn more about AppMan on [github.com/ivan-hc/AppMan](https://github.com/ivan-h
 
 Alternativelly to AppMan, exists a new App Manager named "[AM](https://github.com/ivan-hc/AM-application-manager)", that manages a lot of scripts to install/remove standalone programs and AppImages the way that they can update themself when you run the program.
 
-The script to install Spotify will install the program in /opt/spotify, a launcher in /usr/share/applications and a script in /usr/local/bin that will check if there is a new version of the program from the source each time you launch it.
+The script to install Spotify will install the program in /opt/spotify, a launcher in /usr/share/applications and a script in /usr/local/bin that will check if there is a new version of the program from the source every time you launch it.
 
 Use the following commands:
 

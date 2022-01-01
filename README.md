@@ -7,12 +7,13 @@ I'm not allowed to distribute Spotify AppImage as an official release, so take t
 
 If you're looking for furter releases, use [AppMan](https://github.com/ivan-hc/AppMan), a command line utility that downloads and creates AppImages taking packages from known sources.
 
+If you're looking for furter releases of a standalone version (not an AppImage) that runs anywhere, use [AM](https://github.com/ivan-hc/AM-application-manager), a multiarchitecture Application Manager for AppImages and other standalone programs that works like APT or Pacman, which manages and updates hundreds of programs to the latest version.
+
 # How to use [AppMan](https://github.com/ivan-hc/AppMan)
 
 INSTALL and/or UPDATE using this command:
 
-`appman -i spotify`
-
+    appman -i spotify
 In this way will be downloaded, unpacked and repacked a package from Arch User Repository converting it to an AppImage. Use this command each time a new official release for GNU/Linux is ready.
 
 Learn more about AppMan on [github.com/ivan-hc/AppMan](https://github.com/ivan-hc/AppMan).
@@ -25,18 +26,13 @@ The script to install Spotify will install the program in /opt/spotify, a launch
 
 Use the following commands:
 
-`wget https://raw.githubusercontent.com/ivan-hc/AM-application-manager/main/programs/x86_64/spotify`
-
-`chmod a+x ./spotify`
-
-`sudo ./spotify`
-
+    wget https://raw.githubusercontent.com/ivan-hc/AM-application-manager/main/programs/x86_64/spotify
+    chmod a+x ./spotify
+    sudo ./spotify
 Now just use the app without having any care of new updates in the future, they are managed automatically when you launch the program.
 
 To remove the AM's version of Spotify (and all the files listed above), run the following command:
 
-`sudo /opt/spotify/remove`
+    sudo /opt/spotify/remove
 
-
-------------------------------------
-# This and more scripts will be available on my new repository, at [ivan-hc/AM-application-manager](https://github.com/ivan-hc/AM-application-manager).
+### This and more scripts will be available on my new repository, at [ivan-hc/AM-application-manager](https://github.com/ivan-hc/AM-application-manager).

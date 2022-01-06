@@ -5,34 +5,50 @@ If you would like to see an official Spotify AppImage, vote on [community.spotif
 
 I'm not allowed to distribute Spotify AppImage as an official release, so take this release as an experimental version.
 
-If you're looking for furter releases, use [AppMan](https://github.com/ivan-hc/AppMan), a command line utility that downloads and creates AppImages taking packages from known sources.
-
 If you're looking for furter releases of a standalone version (not an AppImage) that runs anywhere, use [AM](https://github.com/ivan-hc/AM-application-manager), a multiarchitecture Application Manager for AppImages and other standalone programs that works like APT or Pacman, which manages and updates hundreds of programs to the latest version.
 
-# How to use [AppMan](https://github.com/ivan-hc/AppMan)
+# How to convert Spotify to an AppImage
+Copy/paste the following script:
 
-INSTALL and/or UPDATE using this command:
-
-    appman -i spotify
-In this way will be downloaded, unpacked and repacked a package from Arch User Repository converting it to an AppImage. Use this command each time a new official release for GNU/Linux is ready.
-
-Learn more about AppMan on [github.com/ivan-hc/AppMan](https://github.com/ivan-hc/AppMan).
+    APP=spotify
+    mkdir tmp;
+    cd ./tmp;
+    wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+    mv ./appimagetool-x86_64.AppImage ./appimagetool
+    chmod a+x ./appimagetool
+    wget -r -A spotify-1:*-x86_64.pkg.tar.zst -nd https://aur.andontie.net/x86_64/;
+    tar xf ./*.tar.zst;
+    mkdir $APP.AppDir;
+    mv ./opt ./$APP.AppDir;
+    cp ./$APP.AppDir/opt/spotify/*.desktop ./$APP.AppDir;
+    cp ./$APP.AppDir/opt/spotify/icons/spotify-linux-512.png ./$APP.AppDir/spotify-client.png;
+    echo '#!/bin/sh
+    HERE="$(dirname "$(readlink -f "${0}")")"
+    export PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/Apps/:${HERE}/opt/spotify/icons/:${HERE}/opt/spotify/locales/:${HERE}/opt/spotify/swiftshader/${PATH:+:$PATH}"
+    export LD_LIBRARY_PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/swiftshader/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    export XDG_DATA_DIRS="${HERE}/opt/spotify/${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+    export GSETTINGS_SCHEMA_DIR="${HERE}/opt/spotify/swiftshader/${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
+    EXEC="${HERE}/opt/spotify/spotify"
+    exec "${EXEC}"' >> ./$APP.AppDir/AppRun;
+    chmod a+x ./$APP.AppDir/AppRun;
+    ARCH=x86_64 ./appimagetool -n ./$APP.AppDir
+    cd ..
+    mv ./tmp/Spotify*AppImage ./
 
 # How to install Spotify with automatic updates on any GNU/Linux disto (not the AppImage)
+"[AM](https://github.com/ivan-hc/AM-application-manager)" is a new Application Manager that manages a lot of scripts to install/remove standalone programs and AppImages. The [script to install Spotify](https://raw.githubusercontent.com/ivan-hc/AM-application-manager/main/programs/x86_64/spotify) will install the program in /opt/spotify, a launcher in /usr/share/applications and a link in /usr/local/bin.
 
-Alternativelly to AppMan, exists a new App Manager named "[AM](https://github.com/ivan-hc/AM-application-manager)", that manages a lot of scripts to install/remove standalone programs and AppImages the way that they can update themself when you run the program.
-
-The script to install Spotify will install the program in /opt/spotify, a launcher in /usr/share/applications and a script in /usr/local/bin that will check if there is a new version of the program from the source every time you launch it.
-
-Use the following commands:
+#### Installation:
 
     wget https://raw.githubusercontent.com/ivan-hc/AM-application-manager/main/programs/x86_64/spotify
     chmod a+x ./spotify
     sudo ./spotify
-Now just use the app without having any care of new updates in the future, they are managed automatically when you launch the program.
+#### Update
 
-To remove the AM's version of Spotify (and all the files listed above), run the following command:
+    /opt/spotify/AM-updater
+#### Uninstall
+To remove the AM's version of Spotify, run the following command:
 
     sudo /opt/spotify/remove
 
-### This and more scripts will be available on my new repository, at [ivan-hc/AM-application-manager](https://github.com/ivan-hc/AM-application-manager).
+## Find out more at [ivan-hc/AM-application-manager](https://github.com/ivan-hc/AM-application-manager).

@@ -1,0 +1,51 @@
+name: Release Spotify Appimage
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  schedule:
+    - cron: "0 14 * * 0"
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: build
+      run: |
+        wget https://raw.githubusercontent.com/ivan-hc/Spotify-appimage/main/spotify
+        chmod a+x ./spotify
+        sudo ./spotify
+        mkdir dist
+        VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep "Package Details: spotify" | cut -c 40- | rev | cut -c 6- | rev)
+        mv *AppImage dist/Spotify-$VERSION-x86_64.AppImage
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Spotify-x86_64.AppImage
+        path: 'dist'
+        
+  release:
+      needs: [build]
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/download-artifact@v1
+          with:
+            name: Spotify-x86_64.AppImage
+
+        - name: release
+          uses: marvinpinto/action-automatic-releases@latest
+          with:
+            title: Continuous build
+            automatic_release_tag: continuous
+            prerelease: false
+            draft: false
+            files: |
+              Spotify-x86_64.AppImage
+            repo_token: ${{ secrets.GITHUB_TOKEN }}

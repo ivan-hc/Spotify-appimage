@@ -6,10 +6,12 @@ cd ./tmp;
 wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 mv ./appimagetool-x86_64.AppImage ./appimagetool
 chmod a+x ./appimagetool
-wget -r -A spotify-1:*-x86_64.pkg.tar.zst -nd https://aur.andontie.net/x86_64/;
-tar xf ./*.tar.zst;
+VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep -Eo "(http)://[a-zA-Z0-9./?=_%:-]*" | grep .deb)
+wget $VERSION
+ar -x *.deb
+tar xf data.tar.gz
 mkdir $APP.AppDir;
-mv ./opt ./$APP.AppDir;
+mv ./usr/share ./$APP.AppDir/opt;
 cp ./$APP.AppDir/opt/spotify/*.desktop ./$APP.AppDir;
 cp ./$APP.AppDir/opt/spotify/icons/spotify-linux-512.png ./$APP.AppDir/spotify-client.png;
 echo '#!/bin/sh

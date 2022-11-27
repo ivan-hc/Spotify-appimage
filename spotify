@@ -6,8 +6,8 @@ cd ./tmp;
 wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 mv ./appimagetool-x86_64.AppImage ./appimagetool
 chmod a+x ./appimagetool
-VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep -Eo "(http)://[a-zA-Z0-9./?=_%:-]*" | grep .deb)
-wget $VERSION
+VERSION=$(wget -q http://repository.spotify.com/pool/non-free/s/spotify-client/ -O - | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
+wget http://repository.spotify.com/pool/non-free/s/spotify-client/$VERSION
 ar -x *.deb
 tar xf data.tar.gz
 mkdir $APP.AppDir;

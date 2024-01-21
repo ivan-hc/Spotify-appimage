@@ -23,9 +23,7 @@ jobs:
         mkdir dist
         VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep "Package Details: spotify" | cut -c 40- | rev | cut -c 6- | rev)
         mv *AppImage dist/Spotify-$VERSION-x86_64.AppImage
-    - uses: gautamkrishnar/keepalive-workflow@v1
-      with:
-        gh_token: ${{ secrets.GH_TOKEN }}
+
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:

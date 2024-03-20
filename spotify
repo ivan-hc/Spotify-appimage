@@ -3,7 +3,7 @@
 APP=spotify
 mkdir tmp;
 cd ./tmp;
-wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+wget -q $(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | grep -v zsync | grep -i continuous | grep -i appimagetool | grep -i x86_64 | grep browser_download_url | cut -d '"' -f 4 | head -1) -O appimagetool
 mv ./appimagetool-x86_64.AppImage ./appimagetool
 chmod a+x ./appimagetool
 VERSION=$(wget -q http://repository.spotify.com/pool/non-free/s/spotify-client/ -O - | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
@@ -23,6 +23,6 @@ export GSETTINGS_SCHEMA_DIR="${HERE}/opt/spotify/swiftshader/${GSETTINGS_SCHEMA_
 EXEC="${HERE}/opt/spotify/spotify"
 exec "${EXEC}"' >> ./$APP.AppDir/AppRun;
 chmod a+x ./$APP.AppDir/AppRun;
-ARCH=x86_64 ./appimagetool -n ./$APP.AppDir
+ARCH=x86_64 VERSION=$(./appimagetool -v | grep -o '[[:digit:]]*') ./appimagetool -s ./$APP.AppDir
 cd ..
 mv ./tmp/Spotify*AppImage ./

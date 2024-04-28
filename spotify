@@ -3,10 +3,10 @@
 APP=spotify
 mkdir tmp;
 cd ./tmp;
-wget -q $(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | grep -v zsync | grep -i continuous | grep -i appimagetool | grep -i x86_64 | grep browser_download_url | cut -d '"' -f 4 | head -1) -O appimagetool
+wget -q "$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | sed 's/"/ /g; s/ /\n/g' | grep -o 'https.*continuous.*tool.*86_64.*mage$')" -O appimagetool
 mv ./appimagetool-x86_64.AppImage ./appimagetool
 chmod a+x ./appimagetool
-VERSION=$(wget -q http://repository.spotify.com/pool/non-free/s/spotify-client/ -O - | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
+VERSION=$(curl -Ls http://repository.spotify.com/pool/non-free/s/spotify-client/ | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
 wget http://repository.spotify.com/pool/non-free/s/spotify-client/$VERSION
 ar -x *.deb
 tar xf data.tar.gz

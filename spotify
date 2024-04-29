@@ -1,28 +1,41 @@
 #!/bin/sh
 
 APP=spotify
-mkdir tmp;
-cd ./tmp;
+
+# CREATE A TEMPORARY DIRECTORY
+mkdir -p tmp
+cd ./tmp
+
+# DOWNLOADING THE DEPENDENCIES
 wget -q "$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | sed 's/"/ /g; s/ /\n/g' | grep -o 'https.*continuous.*tool.*86_64.*mage$')" -O appimagetool
 mv ./appimagetool-x86_64.AppImage ./appimagetool
 chmod a+x ./appimagetool
+
+# DOWNLOAD ALL THE NEEDED PACKAGE AND COMPILE THE APPDIR
 VERSION=$(curl -Ls http://repository.spotify.com/pool/non-free/s/spotify-client/ | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
-wget http://repository.spotify.com/pool/non-free/s/spotify-client/$VERSION
-ar -x *.deb
-tar xf data.tar.gz
-mkdir $APP.AppDir;
-mv ./usr/share ./$APP.AppDir/opt;
-cp ./$APP.AppDir/opt/spotify/*.desktop ./$APP.AppDir;
-cp ./$APP.AppDir/opt/spotify/icons/spotify-linux-512.png ./$APP.AppDir/spotify-client.png;
+if ! test -f ./$APP*.deb; then
+	wget http://repository.spotify.com/pool/non-free/s/spotify-client/$VERSION
+	ar -x *.deb
+	tar xf data.tar.gz
+	mkdir -p $APP.AppDir
+	mv ./usr/share ./$APP.AppDir/opt
+	cp ./$APP.AppDir/opt/spotify/*.desktop ./$APP.AppDir
+	cp ./$APP.AppDir/opt/spotify/icons/spotify-linux-512.png ./$APP.AppDir/spotify-client.png
+fi
+
+# CUSTOMIZE THE APPRUN
+rm -f ./$APP.AppDir/AppRun
 echo '#!/bin/sh
 HERE="$(dirname "$(readlink -f "${0}")")"
-export PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/Apps/:${HERE}/opt/spotify/icons/:${HERE}/opt/spotify/locales/:${HERE}/opt/spotify/swiftshader/${PATH:+:$PATH}"
+export PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/Apps/:${PATH:+:$PATH}"
 export LD_LIBRARY_PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/swiftshader/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export XDG_DATA_DIRS="${HERE}/opt/spotify/${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
 export GSETTINGS_SCHEMA_DIR="${HERE}/opt/spotify/swiftshader/${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
 EXEC="${HERE}/opt/spotify/spotify"
-exec "${EXEC}"' >> ./$APP.AppDir/AppRun;
-chmod a+x ./$APP.AppDir/AppRun;
+exec "${EXEC}"' >> ./$APP.AppDir/AppRun
+chmod a+x ./$APP.AppDir/AppRun
+
+# EXPORT THE APP TO AN APPIMAGE
 ARCH=x86_64 VERSION=$(./appimagetool -v | grep -o '[[:digit:]]*') ./appimagetool -s ./$APP.AppDir
 cd ..
 mv ./tmp/Spotify*AppImage ./

@@ -7,8 +7,7 @@ mkdir -p tmp
 cd ./tmp
 
 # DOWNLOADING THE DEPENDENCIES
-wget -q "$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | sed 's/"/ /g; s/ /\n/g' | grep -o 'https.*continuous.*tool.*86_64.*mage$')" -O appimagetool
-mv ./appimagetool-x86_64.AppImage ./appimagetool
+wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
 chmod a+x ./appimagetool
 
 # DOWNLOAD ALL THE NEEDED PACKAGE AND COMPILE THE APPDIR
@@ -44,6 +43,6 @@ exec "${EXEC}"' >> ./$APP.AppDir/AppRun
 chmod a+x ./$APP.AppDir/AppRun
 
 # EXPORT THE APP TO AN APPIMAGE
-ARCH=x86_64 VERSION=$(./appimagetool -v | grep -o '[[:digit:]]*') ./appimagetool -s ./$APP.AppDir
+ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./$APP.AppDir
 cd ..
 mv ./tmp/Spotify*AppImage ./

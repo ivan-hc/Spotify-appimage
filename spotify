@@ -7,31 +7,39 @@ mkdir -p tmp
 cd ./tmp
 
 # DOWNLOADING THE DEPENDENCIES
-wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
-chmod a+x ./appimagetool
+if ! test -f ./appimagetool; then
+	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+	chmod a+x ./appimagetool
+fi
 
 # DOWNLOAD ALL THE NEEDED PACKAGE AND COMPILE THE APPDIR
-VERSION=$(curl -Ls http://repository.spotify.com/pool/non-free/s/spotify-client/ | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
-if ! test -f ./$APP*.deb; then
-	wget http://repository.spotify.com/pool/non-free/s/spotify-client/$VERSION
+DEB=$(curl -Ls http://repository.spotify.com/pool/non-free/s/spotify-client/ | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
+if ! test -f ./"$APP"*.deb; then
+	wget http://repository.spotify.com/pool/non-free/s/spotify-client/"$DEB"
 	ar -x *.deb
-	tar xf data.tar.gz
-	mkdir -p $APP.AppDir
-	mv ./usr/share ./$APP.AppDir/opt
-	cp ./$APP.AppDir/opt/spotify/*.desktop ./$APP.AppDir
-	cp ./$APP.AppDir/opt/spotify/icons/spotify-linux-512.png ./$APP.AppDir/spotify-client.png
+	tar xf data.tar.* || exit 0
+	mkdir -p "$APP".AppDir
+	mv ./usr/share ./"$APP".AppDir/opt
+	cp ./"$APP".AppDir/opt/spotify/*.desktop ./"$APP".AppDir || exit 0
+	cp ./"$APP".AppDir/opt/spotify/icons/spotify-linux-512.png ./"$APP".AppDir/spotify-client.png || exit 0
+fi
+
+# CHECK VERSION
+if test -f ./"$APP"*.deb; then
+	tar xf ./control.tar.* || exit 0
+	VERSION=$(grep Version 0<control | cut -c 10-)
 fi
 
 # DOWNLOAD GNUTLS
 if ! test -f ./libcurl-gnutls.tar.zst; then
 	wget https://archlinux.org/packages/core/x86_64/libcurl-gnutls/download/ -O libcurl-gnutls.tar.zst
 	tar fx ./libcurl-gnutls.tar.zst
-	mkdir -p ./$APP.AppDir/usr
-	mv ./usr/lib ./$APP.AppDir/usr/lib
+	mkdir -p ./"$APP".AppDir/usr
+	mv ./usr/lib ./"$APP".AppDir/usr/lib
 fi
 
 # CUSTOMIZE THE APPRUN
-rm -f ./$APP.AppDir/AppRun
+rm -f ./"$APP".AppDir/AppRun
 echo '#!/bin/sh
 HERE="$(dirname "$(readlink -f "${0}")")"
 export PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/Apps/:${PATH:+:$PATH}"
@@ -39,10 +47,10 @@ export LD_LIBRARY_PATH=/lib/:/lib64/:/lib/x86_64-linux-gnu/:/usr/lib/:"${HERE}/o
 export XDG_DATA_DIRS="${HERE}/opt/spotify/${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
 export GSETTINGS_SCHEMA_DIR="${HERE}/opt/spotify/swiftshader/${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
 EXEC="${HERE}/opt/spotify/spotify"
-exec "${EXEC}"' >> ./$APP.AppDir/AppRun
-chmod a+x ./$APP.AppDir/AppRun
+exec "${EXEC}"' >> ./"$APP".AppDir/AppRun
+chmod a+x ./"$APP".AppDir/AppRun
 
 # EXPORT THE APP TO AN APPIMAGE
-ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./$APP.AppDir
+ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./"$APP".AppDir
 cd ..
-mv ./tmp/Spotify*AppImage ./
+mv ./tmp/Spotify*AppImage ./Spotify-"$VERSION"-x86_64.AppImage

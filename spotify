@@ -34,8 +34,16 @@ fi
 if ! test -f ./libcurl-gnutls.tar.zst; then
 	wget https://archlinux.org/packages/core/x86_64/libcurl-gnutls/download/ -O libcurl-gnutls.tar.zst
 	tar fx ./libcurl-gnutls.tar.zst
-	mkdir -p ./"$APP".AppDir/usr
-	mv ./usr/lib ./"$APP".AppDir/usr/lib
+	mkdir -p ./"$APP".AppDir/usr/lib
+	mv ./usr/lib/* ./"$APP".AppDir/usr/lib/
+fi
+
+# DOWNLOAD LIBAYATANA
+if ! test -f ./libayatana-appindicator.tar.zst; then
+	wget https://archlinux.org/packages/extra/x86_64/libayatana-appindicator/download/ -O libayatana-appindicator.tar.zst
+	tar fx ./libayatana-appindicator.tar.zst
+	mkdir -p ./"$APP".AppDir/usr/lib
+	mv ./usr/lib/* ./"$APP".AppDir/usr/lib/
 fi
 
 # CUSTOMIZE THE APPRUN

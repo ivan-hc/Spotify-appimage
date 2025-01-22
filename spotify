@@ -27,7 +27,7 @@ fi
 # CHECK VERSION
 if test -f ./"$APP"*.deb; then
 	tar xf ./control.tar.* || exit 0
-	VERSION=$(grep Version 0<control | cut -c 10-)
+	VERSION=$(grep Version 0<control | cut -c 10- | tr ':' '\n' | grep "\." | head -1)
 fi
 [ -z "$VERSION" ] && VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep "Package Details: spotify" | cut -c 40- | rev | cut -c 6- | rev)
 

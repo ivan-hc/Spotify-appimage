@@ -29,6 +29,7 @@ if test -f ./"$APP"*.deb; then
 	tar xf ./control.tar.* || exit 0
 	VERSION=$(grep Version 0<control | cut -c 10-)
 fi
+[ -z "$VERSION" ] && VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep "Package Details: spotify" | cut -c 40- | rev | cut -c 6- | rev)
 
 # DOWNLOAD GNUTLS
 if ! test -f ./libcurl-gnutls.tar.zst; then
@@ -59,6 +60,8 @@ exec "${EXEC}"' >> ./"$APP".AppDir/AppRun
 chmod a+x ./"$APP".AppDir/AppRun
 
 # EXPORT THE APP TO AN APPIMAGE
-ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./"$APP".AppDir
-cd ..
-mv ./tmp/Spotify*AppImage ./Spotify-"$VERSION"-x86_64.AppImage
+ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+	-u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|Spotify-appimage|continuous|*x86_64.AppImage.zsync" \
+	./"$APP".AppDir Spotify-"$VERSION"-x86_64.AppImage || exit 1
+
+cd .. && ./tmp/*AppImage* ./

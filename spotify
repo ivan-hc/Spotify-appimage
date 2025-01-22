@@ -64,4 +64,4 @@ ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mk
 	-u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|Spotify-appimage|continuous|*x86_64.AppImage.zsync" \
 	./"$APP".AppDir Spotify-"$VERSION"-x86_64.AppImage || exit 1
 
-cd .. && ./tmp/*AppImage* ./
+cd .. && mv ./tmp/*AppImage* ./

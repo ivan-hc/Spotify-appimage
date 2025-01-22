@@ -18,7 +18,7 @@ jobs:
       run: |
         sudo apt update && sudo apt install desktop-file-utils
         chmod a+x ./spotify
-        sudo ./spotify
+        ./spotify
         mkdir dist
         mv *AppImage* dist/
 

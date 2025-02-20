@@ -52,7 +52,7 @@ rm -f ./"$APP".AppDir/AppRun
 echo '#!/bin/sh
 HERE="$(dirname "$(readlink -f "${0}")")"
 export PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/Apps/:${PATH:+:$PATH}"
-export LD_LIBRARY_PATH=/lib/:/lib64/:/lib/x86_64-linux-gnu/:/usr/lib/:"${HERE}/opt/spotify/:${HERE}/opt/spotify/swiftshader/:${HERE}/usr/lib/:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${HERE}/opt/spotify/:${HERE}/opt/spotify/swiftshader/:${HERE}/usr/lib/:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export XDG_DATA_DIRS="${HERE}/opt/spotify/${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
 export GSETTINGS_SCHEMA_DIR="${HERE}/opt/spotify/swiftshader/${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
 EXEC="${HERE}/opt/spotify/spotify"

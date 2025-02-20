@@ -8,14 +8,16 @@ cd ./tmp
 
 # DOWNLOADING THE DEPENDENCIES
 if ! test -f ./appimagetool; then
-	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+	echo "Downloading appimagetool"
+	curl -#Lo appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
 	chmod a+x ./appimagetool
 fi
 
 # DOWNLOAD ALL THE NEEDED PACKAGE AND COMPILE THE APPDIR
 DEB=$(curl -Ls http://repository.spotify.com/pool/non-free/s/spotify-client/ | grep spotify-client_ | grep amd64.deb | grep -o -P '(?<=").*(?=")' | tail -1)
 if ! test -f ./"$APP"*.deb; then
-	wget http://repository.spotify.com/pool/non-free/s/spotify-client/"$DEB"
+	echo "Downloading $DEB from upstream"
+	curl -#Lo "$DEB" http://repository.spotify.com/pool/non-free/s/spotify-client/"$DEB"
 	ar -x *.deb
 	tar xf data.tar.* || exit 0
 	mkdir -p "$APP".AppDir
@@ -31,21 +33,22 @@ if test -f ./"$APP"*.deb; then
 fi
 [ -z "$VERSION" ] && VERSION=$(curl -s https://aur.archlinux.org/packages/spotify | grep "Package Details: spotify" | cut -c 40- | rev | cut -c 6- | rev)
 
-# DOWNLOAD GNUTLS
-if ! test -f ./libcurl-gnutls.tar.zst; then
-	wget https://archlinux.org/packages/core/x86_64/libcurl-gnutls/download/ -O libcurl-gnutls.tar.zst
-	tar fx ./libcurl-gnutls.tar.zst
-	mkdir -p ./"$APP".AppDir/usr/lib
-	mv ./usr/lib/* ./"$APP".AppDir/usr/lib/
-fi
+# DOWNLOAD EXTRA PACKAGES
+arch_packages="libcurl-gnutls libayatana-appindicator libayatana-indicator ayatana-ido"
+for p in $arch_packages; do
+	if ! test -f ./"$p".tar.zst; then
+		for REPO in { "core" "extra" "community" "multilib" }; do
+			if curl --output /dev/null --silent --head --fail "https://archlinux.org/packages/${REPO}/x86_64/$p/download/" 1>/dev/null; then
+				curl -#Lo "$p".tar.zst "https://archlinux.org/packages/${REPO}/x86_64/$p/download/" 2>/dev/null && echo "Downloaded $p"
+			fi
+		done
+		tar fx ./"$p".tar.zst
+	fi
+done
 
-# DOWNLOAD LIBAYATANA
-if ! test -f ./libayatana-appindicator.tar.zst; then
-	wget https://archlinux.org/packages/extra/x86_64/libayatana-appindicator/download/ -O libayatana-appindicator.tar.zst
-	tar fx ./libayatana-appindicator.tar.zst
-	mkdir -p ./"$APP".AppDir/usr/lib
-	mv ./usr/lib/* ./"$APP".AppDir/usr/lib/
-fi
+# MERGE DOWNLOADED LIBRARIES
+mkdir -p ./"$APP".AppDir/usr/lib
+rsync -av ./usr/lib/* ./"$APP".AppDir/usr/lib/
 
 # CUSTOMIZE THE APPRUN
 rm -f ./"$APP".AppDir/AppRun

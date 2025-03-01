@@ -1,0 +1,1 @@
+https://github.com/ivan-hc/Spotify-appimage/releases/download/continuous/Spotify-1.2.56.502.ga68d2d4f-x86_64.AppImage

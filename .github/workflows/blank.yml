@@ -17,8 +17,8 @@ jobs:
     - name: build
       run: |
         sudo apt update && sudo apt install desktop-file-utils
-        chmod a+x ./spotify
-        ./spotify
+        chmod a+x ./spotify-snap2appimage.sh
+        ./spotify-snap2appimage.sh
         mkdir dist
         mv *AppImage* dist/
 
@@ -30,6 +30,7 @@ jobs:
         
   release:
       needs: [build]
+      permissions: write-all
       runs-on: ubuntu-latest
 
       steps:

@@ -1,4 +1,4 @@
-This AppImage has been built from the official deb package.
+This AppImage has been built from the official Snap package.
 
 --------------------------------------------------
 ### NOTE: This wrapper is not verified by, affiliated with, or supported by Spotify Technology.

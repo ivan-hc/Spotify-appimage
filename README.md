@@ -1,5 +1,12 @@
 This AppImage has been built from the official deb package.
 
+--------------------------------------------------
+### NOTE: This wrapper is not verified by, affiliated with, or supported by Spotify Technology.
+
+**The base software is under a proprietary license and unofficially repackaged as an AppImage for demonstration purposes, for the original authors, to promote this packaging format to them. Consider this package as "experimental". I also invite you to request the authors to release an official AppImage, and if they agree, you can show this repository as a proof of concept.**
+
+--------------------------------------------------
+
 If you would like to see an official Spotify AppImage, vote on [community.spotify.com](https://community.spotify.com) and let [SpotifyCares](https://twitter.com/SpotifyCares) know. [A first attempt went and died ](https://community.spotify.com/t5/Closed-Ideas/Provide-Spotify-Desktop-Client-in-cross-distro-AppImage-bundle/idi-p/1337399), but now you can do the difference.
 
 I'm not allowed to distribute Spotify AppImage as an official release, so take this release as an experimental version.

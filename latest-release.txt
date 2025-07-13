@@ -1,2 +1,2 @@
 https://github.com/ivan-hc/Spotify-appimage/releases/download/continuous/Spotify-1.2.63.394.g126b0d89-x86_64.AppImage
-Sat Jul 12 00:45:01 UTC 2025
+Sun Jul 13 00:50:57 UTC 2025

@@ -8,13 +8,13 @@ cd ./tmp || exit 1
 
 # DOWNLOAD APPIMAGETOOL
 if ! test -f ./appimagetool; then
-	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool || exit 1
 	chmod a+x ./appimagetool
 fi
 
 # DOWNLOAD THE SNAP PACKAGE
 if ! test -f ./*.snap; then
-	wget -q "$(curl -H 'Snap-Device-Series: 16' http://api.snapcraft.io/v2/snaps/info/spotify --silent | sed 's/\[{/\n/g; s/},{/\n/g' | grep -i "stable" | head -1 | sed 's/[()",{} ]/\n/g' | grep "^http")"
+	wget -q "$(curl -H 'Snap-Device-Series: 16' http://api.snapcraft.io/v2/snaps/info/spotify --silent | sed 's/\[{/\n/g; s/},{/\n/g' | grep -i "stable" | head -1 | sed 's/[()",{} ]/\n/g' | grep "^http")" || exit 1
 fi
 
 # EXTRACT THE SNAP PACKAGE AND CREATE THE APPIMAGE

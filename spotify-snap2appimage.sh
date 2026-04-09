@@ -38,7 +38,7 @@ _create_spotify_appimage() {
 	#!/bin/sh
 	HERE="$(dirname "$(readlink -f "${0}")")"
 	export UNION_PRELOAD="${HERE}"
-	exec ${HERE}/spotify "$@"
+	exec ${HERE}/usr/bin/spotify "$@"
 	HEREDOC
 	chmod a+x ./"$APP".AppDir/AppRun
 

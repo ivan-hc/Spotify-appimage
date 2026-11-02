@@ -8,7 +8,7 @@ cd ./tmp || exit 1
 
 # DOWNLOAD APPIMAGETOOL
 if ! test -f ./appimagetool; then
-	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+	wget -q https://github.com/pkgforge-dev/appimagetool/releases/latest/download/appimagetool-x86_64-linux -O appimagetool
 	chmod a+x ./appimagetool
 fi
 
@@ -31,6 +31,7 @@ _create_spotify_appimage() {
 
 	mv ./squashfs-root/usr ./"$APP".AppDir/
 	cp -r ./"$APP".AppDir/usr/share/spotify/icons/*128* ./"$APP".AppDir/"$APP".png
+	cp ./"$APP".AppDir/"$APP".png ./"$APP".AppDir/.DirIcon
 	cp -r ./"$APP".AppDir/usr/share/spotify/*.desktop ./"$APP".AppDir/
 	sed -i "s#Icon=.*#Icon=$APP#g" ./"$APP".AppDir/*.desktop
 
@@ -42,9 +43,10 @@ _create_spotify_appimage() {
 	HEREDOC
 	chmod a+x ./"$APP".AppDir/AppRun
 
-	ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+	APPIMAGE_ARCH=x86_64 VERSION="$VERSION" ./appimagetool \
 	-u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|Spotify-appimage|continuous|*-$CHANNEL-*x86_64.AppImage.zsync" \
-	./"$APP".AppDir Spotify-"$CHANNEL"-"$VERSION"-x86_64.AppImage || exit 1
+	-n Spotify-"$CHANNEL"-"$VERSION"-x86_64.AppImage \
+	./"$APP".AppDir || exit 1
 }
 
 CHANNEL="stable"

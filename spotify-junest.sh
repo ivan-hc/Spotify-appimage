@@ -24,10 +24,8 @@ LIBSAVED="libGL $lib_audio_keywords $lib_browser_launcher"
 
 # Download appimagetool
 if [ ! -f ./appimagetool ]; then
-	echo "-----------------------------------------------------------------------------"
-	echo "◆ Downloading \"appimagetool\" from https://github.com/AppImage/appimagetool"
-	echo "-----------------------------------------------------------------------------"
-	curl -#Lo appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage && chmod a+x appimagetool
+	wget -q https://github.com/pkgforge-dev/appimagetool/releases/latest/download/appimagetool-x86_64-linux -O appimagetool
+	chmod a+x ./appimagetool
 fi
 
 # Create and enter the AppDir
@@ -159,6 +157,7 @@ cp -r archlinux/.junest/usr/share/icons/hicolor/256x256/apps/*"$ICON"* "$APP".Ap
 cp -r archlinux/.junest/usr/share/icons/hicolor/512x512/apps/*"$ICON"* "$APP".AppDir/ 2>/dev/null
 cp -r archlinux/.junest/usr/share/icons/hicolor/scalable/apps/*"$ICON"* "$APP".AppDir/ 2>/dev/null
 cp -r archlinux/.junest/usr/share/pixmaps/*"$ICON"* "$APP".AppDir/ 2>/dev/null
+find "$APP".AppDir -maxdepth 1 -name "*.png" -exec cp {} "$APP".AppDir/.DirIcon \; -quit 2>/dev/null
 
 # Test if the desktop file and the icon are in the root of the future appimage (./*appdir/*)
 if test -f "$APP".AppDir/*.desktop; then
@@ -575,6 +574,7 @@ TAG="continuous"
 VERSION="$VERSION"
 UPINFO="gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|$REPO|$TAG|*x86_64.AppImage.zsync"
 
-ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+APPIMAGE_ARCH=x86_64 VERSION="$VERSION" ./appimagetool \
 	-u "$UPINFO" \
-	./"$APP".AppDir "$APPNAME"_"$VERSION"-archimage4.3-x86_64.AppImage
+	-n "$APPNAME"_"$VERSION"-archimage4.3-x86_64.AppImage \
+	./"$APP".AppDir || exit 1

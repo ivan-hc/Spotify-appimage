@@ -8,8 +8,7 @@ cd ./tmp
 
 # DOWNLOADING THE DEPENDENCIES
 if ! test -f ./appimagetool; then
-	echo "Downloading appimagetool"
-	curl -#Lo appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+	wget -q https://github.com/pkgforge-dev/appimagetool/releases/latest/download/appimagetool-x86_64-linux -O appimagetool
 	chmod a+x ./appimagetool
 fi
 
@@ -24,6 +23,7 @@ if ! test -f ./"$APP"*.deb; then
 	mv ./usr/share ./"$APP".AppDir/opt
 	cp ./"$APP".AppDir/opt/spotify/*.desktop ./"$APP".AppDir || exit 0
 	cp ./"$APP".AppDir/opt/spotify/icons/spotify-linux-512.png ./"$APP".AppDir/spotify-client.png || exit 0
+	cp ./"$APP".AppDir/spotify-client.png ./"$APP".AppDir/.DirIcon || exit 0
 fi
 
 # CHECK VERSION
@@ -63,8 +63,9 @@ exec "${EXEC}"' >> ./"$APP".AppDir/AppRun
 chmod a+x ./"$APP".AppDir/AppRun
 
 # EXPORT THE APP TO AN APPIMAGE
-ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+APPIMAGE_ARCH=x86_64 VERSION="$VERSION" ./appimagetool \
 	-u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|Spotify-appimage|continuous|*x86_64.AppImage.zsync" \
-	./"$APP".AppDir Spotify-"$VERSION"-x86_64.AppImage || exit 1
+	-n Spotify-"$VERSION"-x86_64.AppImage \
+	./"$APP".AppDir || exit 1
 
 cd .. && mv ./tmp/*AppImage* ./

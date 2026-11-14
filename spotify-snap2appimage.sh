@@ -18,9 +18,9 @@ _create_spotify_appimage() {
 	# DOWNLOAD THE SNAP PACKAGE
 	if ! test -f ./*.snap; then
 		if wget --version | head -1 | grep -q ' 1.'; then
-			wget -q --no-verbose --show-progress --progress=bar "$(curl -H 'Snap-Device-Series: 16' http://api.snapcraft.io/v2/snaps/info/spotify --silent | sed 's/\[{/\n/g; s/},{/\n/g' | grep -i "$CHANNEL" | head -1 | sed 's/[()",{} ]/\n/g' | grep -Eoi "^http.*snap$")"
+			wget -q --no-verbose --show-progress --progress=bar "$(curl -s -H "Snap-Device-Series: 16" "https://api.snapcraft.io/v2/snaps/info/spotify" | sed 's/\[{/\n/g; s/},{/\n/g' | grep -i "$CHANNEL" | head -1 | sed 's/[()",{} ]/\n/g' | grep -Eoi "^http.*snap$")"
 		else
-			wget "$(curl -H 'Snap-Device-Series: 16' http://api.snapcraft.io/v2/snaps/info/spotify --silent | sed 's/\[{/\n/g; s/},{/\n/g' | grep -i "$CHANNEL" | head -1 | sed 's/[()",{} ]/\n/g' | grep -Eoi "^http.*snap$")"
+			wget "$(curl -s -H "Snap-Device-Series: 16" "https://api.snapcraft.io/v2/snaps/info/spotify" | sed 's/\[{/\n/g; s/},{/\n/g' | grep -i "$CHANNEL" | head -1 | sed 's/[()",{} ]/\n/g' | grep -Eoi "^http.*snap$")"
 		fi
 	fi
 
